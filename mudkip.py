@@ -7,7 +7,13 @@ than a given level.
 
 @author Jake Lee/nubby  (jlee211@ucsc.edu)
 @date   3 Dec 2024
+
+TODO(nubby):
+    * Add print methods for Fields and Farms.
+    * Load data properly into Fields.
+    * Do the math.
 """
+import csv
 import sys
 #import cvx
 
@@ -66,8 +72,27 @@ class Farm(object):
     def __init__(self, data: list[dict]):
         self.F = [] 
         self.N = []
-        self.size = len(size.keys())
+        self.size = len(data)
         self._build_farm(data)
+
+    def __repr__(self):
+        """
+        For this project, we are interested in the elevations of each Field.
+        TODO(nubby): Make this output more informative and configurable.
+        """
+        return """
+             ____________
+            |            |
+            |{:^4}{:^4}{:^4}|
+            |            |
+            |{:^4}{:^4}{:^4}|
+            |            |
+            |{:^4}{:^4}{:^4}|
+            |____________|
+
+        """.format(
+            *[str(field.Elevation) for field in self.F]
+        )
 
     def _build_farm(self, data: list[dict]):
         """_build_farm(size)
@@ -103,13 +128,18 @@ class Field(object):
     A Field imports the :
 
         {
-            "Elevation": float,
+            "Z": float,     <-- "Elevation"
             "Name": str,
-            "WaterVolume": float
+            "SW": float     <-- "WaterVolume"
         }
     """
     def __init__(self, data: dict):
-        pass
+        try:
+            self.Elevation = data["Z"]
+            self.Name = data["Name"]
+            self.WaterVolume = data["SW"]
+        except KeyError as e:
+            raise(e)
 
 
 # Helpers.
@@ -130,7 +160,13 @@ def _load_csv(fpath: str) -> list[dict]:
 
 # Main functionality.
 def run_mudkip(farm: Farm):
-    pass
+    """run_mudkip(farm)
+    Solve the water input optimization problem.
+
+    @param  farm        (Farm)  The structure/dynamics of the simulation.
+    @return schedule    (dict)  
+    """
+    return {}
 
 def clean_up(e: Exception):
     print(f"{e}; good bye.")
@@ -144,6 +180,8 @@ if __name__ == "__main__":
 
     try:
         farm = Farm(farm_data)
-    except ValueError as e:
+    except ValueError or KeyError as e:
         clean_up(e)
+
+    print(farm)
     watering_schedule = run_mudkip(farm)
