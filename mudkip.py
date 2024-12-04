@@ -99,6 +99,7 @@ class Farm(object):
         Initialize a new array of Fields of a desired size and build their
         adjacency matrix.
         """
+        print("Building farm...")
         if len(data) == 9:
             #    1  2  3  4  5  6  7  8  9
             self.N = [
@@ -117,6 +118,7 @@ class Farm(object):
                 "WIP: Currently only supports Farms of exactly 9 Field nodes!"
             )
         [self.F.append(Field(field_data)) for field_data in data]
+        print("    DONE.")
 
 
 class Field(object):
@@ -140,6 +142,13 @@ class Field(object):
             self.WaterVolume = data["SW"]
         except KeyError as e:
             raise(e)
+
+    def __repr__(self):
+        return "{}: Elevation = {}m; Water Volume = {}".format(
+            self.Name,
+            self.Elevation,
+            self.WaterVolume
+        )
 
 
 # Helpers.
@@ -183,5 +192,4 @@ if __name__ == "__main__":
     except ValueError or KeyError as e:
         clean_up(e)
 
-    print(farm)
     watering_schedule = run_mudkip(farm)
