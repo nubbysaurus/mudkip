@@ -67,10 +67,7 @@ class Farm(object):
         self.F = [] 
         self.N = []
         self.size = len(size.keys())
-        try:
-            self._build_farm(data)
-        except ValueError as e:
-            print(e)
+        self._build_farm(data)
 
     def _build_farm(self, data: list[dict]):
         """_build_farm(size)
@@ -135,15 +132,18 @@ def _load_csv(fpath: str) -> list[dict]:
 def run_mudkip(farm: Farm):
     pass
 
-def clean_up():
-    print("Good bye.")
+def clean_up(e: Exception):
+    print(f"{e}; good bye.")
     sys.exit(0)
 
 if __name__ == "__main__":
     try:
         farm_data = _load_csv(_DEFAULT_FARM_DATA_PATH)
     except OSError as e:
-        print(e)
-        clean_up()
-    farm = Farm(farm_data)
+        clean_up(e)
+
+    try:
+        farm = Farm(farm_data)
+    except ValueError as e:
+        clean_up(e)
     watering_schedule = run_mudkip(farm)
