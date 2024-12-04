@@ -182,14 +182,21 @@ def clean_up(e: Exception):
     sys.exit(0)
 
 if __name__ == "__main__":
+    # Load location-identifiable data corresponding to a farm being studied.
     try:
         farm_data = _load_csv(_DEFAULT_FARM_DATA_PATH)
     except OSError as e:
         clean_up(e)
 
+    # Load a weather "schedule", i.e. the number of time steps and amount of
+    # rain to simulate on the farm.
+    # TODO(nubby)
+
+    # Generate a model of the farm being explored.
     try:
         farm = Farm(farm_data)
     except ValueError or KeyError as e:
         clean_up(e)
 
+    # Generate an optimal irrigation schedule for each Field in the simulation.
     watering_schedule = run_mudkip(farm)
