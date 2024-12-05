@@ -1,0 +1,10 @@
+Name,PoreSizeDistFactor,Radius,RetentionInflection,SaturatedHydraulicConductivity,SW,X,Y,Z
+Field1,1,1,0.5,0.00125,0,1,1,1
+Field2,1,1,0.5,0.00125,0,1,1,2
+Field3,1,1,0.5,0.00125,0,1,1,1
+Field4,1,1,0.5,0.00125,0,1,1,1
+Field5,1,1,0.5,0.00125,0,1,1,2
+Field6,1,1,0.5,0.00125,0,1,1,1
+Field7,1,1,0.5,0.00125,0,1,1,1
+Field8,1,1,0.5,0.00125,0,1,1,2
+Field9,1,1,0.5,0.00125,0,1,1,1
