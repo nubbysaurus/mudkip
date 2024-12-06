@@ -293,87 +293,31 @@ def FAO(hour: int, T: float) -> float:
     ) / (delta + psych * (1 + 0.34 * u_w))
     return et
 
+def _subplot_config(f, i: int, n: int, u, V_g, V_s):
+    """_subplot_config(n, i, u, V_g, V_s)
+    """
+    index = i - 1
+    ax1 = f.add_subplot(n, 1, i)
+    ax1.plot(
+        V_g[index, :].value + V_s[index, :].value, c="c"
+    )
+    ax1.set_ylabel(f"$(V_t)_{i}$", fontsize=16, c="c")
+    ax1.set_xticks([])
+    ax2 = ax1.twinx()
+    ax2.plot(u[index, :].value, c="r")
+    ax2.set_ylabel(f"$(u_t)_{i}$", fontsize=16, c="r")
+    return ax1
+    
+
 def plot_results(n, u, V_g, V_s):
     """plot_results(n, u, V)
     """
     f = plt.figure(figsize=(10,8))
 
-    ax1 = f.add_subplot(911)
+    ax1 = _subplot_config(f, 1, n, u, V_g, V_s)
     ax1.set_title("V (L) and u (L/hr) vs Hour of Day", fontsize=20)
-    ax1.plot(
-        V_g[0, :].value + V_s[0, :].value, c="c"
-    )
-    ax1.set_ylabel(r"$(V_t)_1$", fontsize=16, c="c")
-    ax1.set_xticks([])
-    ax2 = ax1.twinx()
-    ax2.plot(u[0, :].value, c="r")
-    ax2.set_ylabel(r"$(u_t)_1$", fontsize=16, c="r")
     
-    """
-    ax1 = f.add_subplot(912)
-    ax1.plot(V[1, :].value, c="c")
-    ax1.set_ylabel(r"$(V_t)_2$", fontsize=16, c="c")
-    ax1.set_xticks([])
-    ax2 = ax1.twinx()
-    ax2.plot(u[1, :].value, c="r")
-    ax2.set_ylabel(r"$(u_t)_2$", fontsize=16, c="r")
-
-    ax1 = f.add_subplot(913)
-    ax1.plot(V[2, :].value, c="c")
-    ax1.set_ylabel(r"$(V_t)_3$", fontsize=16, c="c")
-    ax1.set_xticks([])
-    ax2 = ax1.twinx()
-    ax2.plot(u[2, :].value, c="r")
-    ax2.set_ylabel(r"$(u_t)_3$", fontsize=16, c="r")
-
-    ax1 = f.add_subplot(914)
-    ax1.plot(V[3, :].value, c="c")
-    ax1.set_ylabel(r"$(V_t)_4$", fontsize=16, c="c")
-    ax1.set_xticks([])
-    ax2 = ax1.twinx()
-    ax2.plot(u[3, :].value, c="r")
-    ax2.set_ylabel(r"$(u_t)_4$", fontsize=16, c="r")
-
-    ax1 = f.add_subplot(915)
-    ax1.plot(V[4, :].value, c="c")
-    ax1.set_ylabel(r"$(V_t)_5$", fontsize=16, c="c")
-    ax1.set_xticks([])
-    ax2 = ax1.twinx()
-    ax2.plot(u[4, :].value, c="r")
-    ax2.set_ylabel(r"$(u_t)_5$", fontsize=16, c="r")
-
-    ax1 = f.add_subplot(916)
-    ax1.plot(V[5, :].value, c="c")
-    ax1.set_ylabel(r"$(V_t)_6$", fontsize=16, c="c")
-    ax1.set_xticks([])
-    ax2 = ax1.twinx()
-    ax2.plot(u[5, :].value, c="r")
-    ax2.set_ylabel(r"$(u_t)_6$", fontsize=16, c="r")
-
-    ax1 = f.add_subplot(917)
-    ax1.plot(V[6, :].value, c="c")
-    ax1.set_ylabel(r"$(V_t)_7$", fontsize=16, c="c")
-    ax1.set_xticks([])
-    ax2 = ax1.twinx()
-    ax2.plot(u[6, :].value, c="r")
-    ax2.set_ylabel(r"$(u_t)_7$", fontsize=16, c="r")
-
-    ax1 = f.add_subplot(918)
-    ax1.plot(V[7, :].value, c="c")
-    ax1.set_ylabel(r"$(V_t)_8$", fontsize=16, c="c")
-    ax1.set_xticks([])
-    ax2 = ax1.twinx()
-    ax2.plot(u[7, :].value, c="r")
-    ax2.set_ylabel(r"$(u_t)_8$", fontsize=16, c="r")
-
-    ax1 = f.add_subplot(919)
-    ax1.plot(V[8, :].value, c="c")
-    ax1.set_ylabel(r"$(V_t)_9$", fontsize=16, c="c")
-    ax1.set_xticks(np.arange(0, 24+1, 1))
-    ax2 = ax1.twinx()
-    ax2.plot(u[8, :].value, c="r")
-    ax2.set_ylabel(r"$(u_t)_9$", fontsize=16, c="r")
-    """
+    [_subplot_config(f, i, n, u, V_g, V_s) for i in range(2,n+1)]
 
     plt.show()
 
@@ -400,7 +344,7 @@ def run_mudkip(farm: Farm, weather: list[dict]):
     # These parameters simulate the relative moisture retention factors of air
     # and soil.
     sigma = 0.1     # Surface water evaporates quickly.
-    epsilon = 0.3   # Water stays longer in soil.
+    epsilon = 0.5   # Water stays longer in soil.
  
     V_s0 = np.full(n, 2)
     V_g0 = np.full(n, 0)
