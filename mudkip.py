@@ -19,6 +19,7 @@ import matplotlib.pyplot as plt
 
 # Module-level variables.
 _DEFAULT_FARM_DATA_PATH = "./data/sample_farm_data.csv"
+_STEEP_FARM_DATA_PATH = "./data/sample_steep_data.csv"
 _DEFAULT_WEATHER_DATA_PATH = "./data/sample_weather_data.csv"
 _DEFAULT_DURATION = 24   # Hours
 
@@ -103,7 +104,6 @@ class Farm(object):
         # Distances. <-- For very large farms, we can save these here.
         Fi_coords = np.array([Fi.X, Fi.Y, Fi.Z])
         Fj_coords = np.array([Fj.X, Fj.Y, Fj.Z])
-        print(str(Fi_coords), str(Fj_coords))
         L_ij = np.linalg.norm(Fi_coords - Fj_coords)
 
         # Harmonic mean of Ki and Kj.
@@ -119,9 +119,7 @@ class Farm(object):
         
         # Return dV.
         dV = -dK * S_ij * (Fi.H - Fj.H) / L_ij
-        return dV
-
-
+        return float(dV)
 
     def update(self):
         """update()
@@ -135,7 +133,6 @@ class Farm(object):
                     self.A[i][j] = 0
                 else:
                     self.A[i][j] = self.A[i][j] + self._calculate_dV(i, j)
-        
 
 
 class Field(object):
@@ -296,118 +293,87 @@ def FAO(hour: int, T: float) -> float:
     ) / (delta + psych * (1 + 0.34 * u_w))
     return et
 
-def plot_results(u, V):
-    f = plt.figure()
-
+def plot_results(n, u, V_g, V_s):
+    """plot_results(n, u, V)
     """
-    ax = f.add_subplot(911)
-    plt.plot(V[0, :].value)
-    plt.ylabel(r"$V_t)_1$", fontsize=16)
-    plt.yticks(np.linspace(0, 2, 1))
-    plt.xticks([])
+    f = plt.figure(figsize=(10,8))
+
+    ax1 = f.add_subplot(911)
+    ax1.set_title("V (L) and u (L/hr) vs Hour of Day", fontsize=20)
+    ax1.plot(
+        V_g[0, :].value + V_s[0, :].value, c="c"
+    )
+    ax1.set_ylabel(r"$(V_t)_1$", fontsize=16, c="c")
+    ax1.set_xticks([])
+    ax2 = ax1.twinx()
+    ax2.plot(u[0, :].value, c="r")
+    ax2.set_ylabel(r"$(u_t)_1$", fontsize=16, c="r")
     
-    plt.subplot(9,1,2)
-    plt.plot(V[1, :].value)
-    plt.ylabel(r"$V_t)_2$", fontsize=16)
-    plt.yticks(np.linspace(0, 2, 1))
-    plt.xticks([])
-
-    plt.subplot(9,1,3)
-    plt.plot(V[2, :].value)
-    plt.ylabel(r"$V_t)_3$", fontsize=16)
-    plt.yticks(np.linspace(0, 2, 1))
-    plt.xticks([])
-
-    plt.subplot(9,1,4)
-    plt.plot(V[3, :].value)
-    plt.ylabel(r"$V_t)_4$", fontsize=16)
-    plt.yticks(np.linspace(0, 2, 1))
-    plt.xticks([])
-
-    plt.subplot(9,1,5)
-    plt.plot(V[4, :].value)
-    plt.ylabel(r"$V_t)_5$", fontsize=16)
-    plt.yticks(np.linspace(0, 2, 1))
-    plt.xticks([])
-
-    plt.subplot(9,1,6)
-    plt.plot(V[5, :].value)
-    plt.ylabel(r"$V_t)_6$", fontsize=16)
-    plt.yticks(np.linspace(0, 2, 1))
-    plt.xticks([])
-
-    plt.subplot(9,1,7)
-    plt.plot(V[6, :].value)
-    plt.ylabel(r"$V_t)_7$", fontsize=16)
-    plt.yticks(np.linspace(0, 2, 1))
-    plt.xticks([])
-
-    plt.subplot(9,1,8)
-    plt.plot(V[7, :].value)
-    plt.ylabel(r"$V_t)_8$", fontsize=16)
-    plt.yticks(np.linspace(0, 2, 1))
-    plt.xticks([])
-
-    plt.subplot(9,1,9)
-    plt.plot(V[8, :].value)
-    plt.ylabel(r"$V_t)_9$", fontsize=16)
-    plt.yticks(np.linspace(0, 2, 1))
-    plt.xticks([])
     """
+    ax1 = f.add_subplot(912)
+    ax1.plot(V[1, :].value, c="c")
+    ax1.set_ylabel(r"$(V_t)_2$", fontsize=16, c="c")
+    ax1.set_xticks([])
+    ax2 = ax1.twinx()
+    ax2.plot(u[1, :].value, c="r")
+    ax2.set_ylabel(r"$(u_t)_2$", fontsize=16, c="r")
 
-    plt.subplot(9,1,1)
-    plt.plot(u[1, :].value)
-    plt.ylabel(r"$u_t)_1$", fontsize=16)
-    plt.yticks(np.linspace(0, 2, 1))
-    plt.xticks([])
+    ax1 = f.add_subplot(913)
+    ax1.plot(V[2, :].value, c="c")
+    ax1.set_ylabel(r"$(V_t)_3$", fontsize=16, c="c")
+    ax1.set_xticks([])
+    ax2 = ax1.twinx()
+    ax2.plot(u[2, :].value, c="r")
+    ax2.set_ylabel(r"$(u_t)_3$", fontsize=16, c="r")
 
-    plt.subplot(9,1,2)
-    plt.plot(u[1, :].value)
-    plt.ylabel(r"$u_t)_2$", fontsize=16)
-    plt.yticks(np.linspace(0, 2, 1))
-    plt.xticks([])
+    ax1 = f.add_subplot(914)
+    ax1.plot(V[3, :].value, c="c")
+    ax1.set_ylabel(r"$(V_t)_4$", fontsize=16, c="c")
+    ax1.set_xticks([])
+    ax2 = ax1.twinx()
+    ax2.plot(u[3, :].value, c="r")
+    ax2.set_ylabel(r"$(u_t)_4$", fontsize=16, c="r")
 
-    plt.subplot(9,1,3)
-    plt.plot(u[2, :].value)
-    plt.ylabel(r"$u_t)_3$", fontsize=16)
-    plt.yticks(np.linspace(0, 2, 1))
-    plt.xticks([])
+    ax1 = f.add_subplot(915)
+    ax1.plot(V[4, :].value, c="c")
+    ax1.set_ylabel(r"$(V_t)_5$", fontsize=16, c="c")
+    ax1.set_xticks([])
+    ax2 = ax1.twinx()
+    ax2.plot(u[4, :].value, c="r")
+    ax2.set_ylabel(r"$(u_t)_5$", fontsize=16, c="r")
 
-    plt.subplot(9,1,4)
-    plt.plot(u[3, :].value)
-    plt.ylabel(r"$u_t)_4$", fontsize=16)
-    plt.yticks(np.linspace(0, 2, 1))
-    plt.xticks([])
+    ax1 = f.add_subplot(916)
+    ax1.plot(V[5, :].value, c="c")
+    ax1.set_ylabel(r"$(V_t)_6$", fontsize=16, c="c")
+    ax1.set_xticks([])
+    ax2 = ax1.twinx()
+    ax2.plot(u[5, :].value, c="r")
+    ax2.set_ylabel(r"$(u_t)_6$", fontsize=16, c="r")
 
-    plt.subplot(9,1,5)
-    plt.plot(u[4, :].value)
-    plt.ylabel(r"$u_t)_5$", fontsize=16)
-    plt.yticks(np.linspace(0, 2, 1))
-    plt.xticks([])
+    ax1 = f.add_subplot(917)
+    ax1.plot(V[6, :].value, c="c")
+    ax1.set_ylabel(r"$(V_t)_7$", fontsize=16, c="c")
+    ax1.set_xticks([])
+    ax2 = ax1.twinx()
+    ax2.plot(u[6, :].value, c="r")
+    ax2.set_ylabel(r"$(u_t)_7$", fontsize=16, c="r")
 
-    plt.subplot(9,1,6)
-    plt.plot(u[5, :].value)
-    plt.ylabel(r"$u_t)_6$", fontsize=16)
-    plt.yticks(np.linspace(0, 2, 1))
-    plt.xticks([])
+    ax1 = f.add_subplot(918)
+    ax1.plot(V[7, :].value, c="c")
+    ax1.set_ylabel(r"$(V_t)_8$", fontsize=16, c="c")
+    ax1.set_xticks([])
+    ax2 = ax1.twinx()
+    ax2.plot(u[7, :].value, c="r")
+    ax2.set_ylabel(r"$(u_t)_8$", fontsize=16, c="r")
 
-    plt.subplot(9,1,7)
-    plt.plot(u[6, :].value)
-    plt.ylabel(r"$u_t)_7$", fontsize=16)
-    plt.yticks(np.linspace(0, 2, 1))
-    plt.xticks([])
-
-    plt.subplot(9,1,8)
-    plt.plot(u[7, :].value)
-    plt.ylabel(r"$u_t)_8$", fontsize=16)
-    plt.yticks(np.linspace(0, 2, 1))
-    plt.xticks([])
-
-    plt.subplot(9,1,9)
-    plt.plot(u[8, :].value)
-    plt.ylabel(r"$u_t)_9$", fontsize=16)
-    plt.yticks(np.linspace(0, 2, 1))
-    plt.xticks([])
+    ax1 = f.add_subplot(919)
+    ax1.plot(V[8, :].value, c="c")
+    ax1.set_ylabel(r"$(V_t)_9$", fontsize=16, c="c")
+    ax1.set_xticks(np.arange(0, 24+1, 1))
+    ax2 = ax1.twinx()
+    ax2.plot(u[8, :].value, c="r")
+    ax2.set_ylabel(r"$(u_t)_9$", fontsize=16, c="r")
+    """
 
     plt.show()
 
@@ -421,39 +387,64 @@ def run_mudkip(farm: Farm, weather: list[dict]):
     n = len(farm.F)
     T = _DEFAULT_DURATION
 
-    A = farm.A
+    et = []
+
     # Threshold volume needed at each Field; doubles as initial value.
     alpha = np.full(n, 1)
     # u = input water at each Field node.
     u = cp.Variable((len(farm.F), T))
-    # V is the water volume at each node.
-    V = cp.Variable((len(farm.F), T + 1))
-    V_0 = alpha 
+    # V_s and V_g are the surface and ground water volume at each node.
+    V_s = cp.Variable((len(farm.F), T + 1))
+    V_g = cp.Variable((len(farm.F), T + 1))
+
+    # These parameters simulate the relative moisture retention factors of air
+    # and soil.
+    sigma = 0.1     # Surface water evaporates quickly.
+    epsilon = 0.3   # Water stays longer in soil.
+ 
+    V_s0 = np.full(n, 2)
+    V_g0 = np.full(n, 0)
     
     cost = 0
     constr = []
 
     for t in range(T):
-        cost += cp.sum_squares(u[:, t])
+        # Calculate the rate of evapotranspiration at t.
+        fao =  FAO(
+            t, float(weather[t]["Temperature"])
+        )
+        # Calculate the next iteration's surface water volume.
         constr += [
-            V[:, t+1] == V[:, t] + u[:, t] + FAO(
-                t, float(weather[t]["Temperature"])
+            V_s[:, t+1] == (
+                np.diag(np.full(n, 1)) - farm.A
+            ) @ (V_s[:, t] + u[:, t]) + np.full(n, (1-sigma) * fao)
+        ]
+        # Calculate the next iteration's ground water volume.
+        constr += [
+            V_g[:, t+1] == (
+                V_g[:, t] + np.diag(np.full(n, epsilon)) @ (
+                    V_s[:, t]
+                ) + np.full(n, (1-epsilon) * fao)
             )
         ]
-        constr += [V[:, t] >= alpha]
+        constr += [V_g[:, t] + V_s[:, t] >= alpha]
         constr += [u[:, t] >= 0]
-    constr += [V[:, T] == 1, V[:, 0] == V_0]
+        cost += cp.sum(u[:, t])
+    constr += [V_g[:, T] == V_g0, V_g[:, 0] == V_g0]
+    constr += [V_s[:, T] == V_s0, V_s[:, 0] == V_s0]
 
     problem = cp.Problem(cp.Minimize(cost), constr)
     problem.solve()
 
     print("Problem status: ", problem.status)
-    print("Optimal value: ", problem.value)
-    print("Water volumes: ", V.value)
-    #print("Watering schedule: ", str(len(u.value)), str(u.value))
+    print("Total water used: ", problem.value)
+    print("Water volumes: ", V_g.value + V_s.value)
+    #print("Watering schedule: ", str(u[0].value))
+    #print("ET: ", str(et))
 
-    plot_results(u, V)
-    return problem.value
+    plot_results(n, u, V_g, V_s)
+
+    return u.value
 
 def clean_up(e: Exception):
     print(f"{e}; good bye.")
@@ -462,7 +453,8 @@ def clean_up(e: Exception):
 if __name__ == "__main__":
     # Load location-identifiable data corresponding to a farm being studied.
     try:
-        farm_data = _load_csv(_DEFAULT_FARM_DATA_PATH)
+        #farm_data = _load_csv(_DEFAULT_FARM_DATA_PATH)
+        farm_data = _load_csv(_STEEP_FARM_DATA_PATH)
     except OSError as e:
         clean_up(e)
 
